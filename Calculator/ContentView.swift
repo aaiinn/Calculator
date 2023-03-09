@@ -68,7 +68,7 @@ enum ButtonType: String {
         switch self {
         case .first, .second, .third, .fourth, .fifth, .sixth, .seventh, .eighth, .ninth, .zero, .dot, .equal, .plus, .minus, .multiple, .devide: return Color.white
         case .percent, .opposite, .clear: return Color.black
-         
+            
         }
     }
 }
@@ -108,9 +108,9 @@ struct ContentView: View {
                                         totalNumber = "0"
                                     }
                                     else if item == .plus ||
-                                              item == .minus ||
-                                              item == .multiple ||
-                                              item == .devide {
+                                                item == .minus ||
+                                                item == .multiple ||
+                                                item == .devide {
                                         totalNumber = "Error"
                                     }
                                     else {
@@ -154,13 +154,26 @@ struct ContentView: View {
                                     }
                                 }
                             }label: {
-                                Text(item.ButtonDisplayName).frame(width: item == .some(.zero) ? 160 : 80, height: 80).background(item.backgroundColor).cornerRadius(40).foregroundColor(item.forgroundColor).font(.system(size: 33))
+                                Text(item.ButtonDisplayName).frame(width: calculatorButtonWidth(button: item), height: calculatorButtonHeight(button: item)).background(item.backgroundColor).cornerRadius(40).foregroundColor(item.forgroundColor).font(.system(size: 33))
                             }
                         }
                     }
                 }
             }
         }
+    }
+    
+    private func calculatorButtonWidth(button buttonType: ButtonType) -> CGFloat {
+        switch buttonType {
+        case .zero:
+            return ((UIScreen.main.bounds.width - 5*10) / 4) * 2
+        default:
+            return (UIScreen.main.bounds.width - 5*10) / 4
+        }
+    }
+    
+    private func calculatorButtonHeight(button: ButtonType) -> CGFloat{
+        return (UIScreen.main.bounds.width - 5*10) / 4
     }
 }
 
