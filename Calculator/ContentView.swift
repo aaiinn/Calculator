@@ -68,7 +68,6 @@ enum ButtonType: String {
         switch self {
         case .first, .second, .third, .fourth, .fifth, .sixth, .seventh, .eighth, .ninth, .zero, .dot, .equal, .plus, .minus, .multiple, .devide: return Color.white
         case .percent, .opposite, .clear: return Color.black
-            
         }
     }
 }
@@ -78,6 +77,7 @@ struct ContentView: View {
     @State private var totalNumber: String = "0"
     @State var tempNumber: Int = 0
     @State var operatorType: ButtonType = .clear
+    @State var isNotEnding:Bool = true
     
     private let buttonData: [[ButtonType]] = [
         [.clear, .opposite, .percent, .devide],
@@ -90,64 +90,65 @@ struct ContentView: View {
     var body: some View {
         ZStack{
             Color.black.ignoresSafeArea()
-            
             VStack {
                 Spacer()
                 HStack{
                     Spacer()
                     Text(totalNumber).padding().font(.system(size: 73)).foregroundColor(.white)
                 }
-                
                 ForEach(buttonData, id: \.self) { line in
                     HStack{
                         ForEach(line, id: \.self) {item in
                             Button{
-                                if totalNumber == "0" {
-                                    
+                                if isNotEnding {
                                     if item == .clear {
                                         totalNumber = "0"
-                                    }
-                                    else if item == .plus ||
+                                        isNotEnding = true
+                                    }else if item == .plus ||
                                                 item == .minus ||
                                                 item == .multiple ||
                                                 item == .devide {
                                         totalNumber = "Error"
-                                    }
-                                    else {
+                                    }else {
                                         totalNumber = item.ButtonDisplayName
+                                        isNotEnding = false // 이미 입력 받고있음
                                     }
                                 } else {
                                     if item == .clear {
                                         totalNumber = "0"
-                                    }
-                                    else if item == .plus {
+                                        isNotEnding = true // 새로 입력 받을 옞
+                                    }else if item == .plus {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .plus
-                                        totalNumber = "0"
-                                    }
-                                    else if item == .multiple {
+                                        isNotEnding = true
+                                        
+                                    }else if item == .multiple {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .multiple
-                                        totalNumber = "0"
-                                    }
-                                    else if item == .minus {
+                                        isNotEnding = true
+                                        
+                                    }else if item == .minus {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .minus
-                                        totalNumber = "0"
+                                        isNotEnding = true
+                                        
                                     }
-                                    else if item == .equal {
+                                    else if item == .devide {
+                                        tempNumber = Int(totalNumber) ?? 0
+                                        operatorType = .devide
+                                        isNotEnding = true
+                                        
+                                    }else if item == .equal {
                                         
                                         if operatorType == .plus {
                                             totalNumber = String((Int(totalNumber) ?? 0) + tempNumber)
-                                        }
-                                        else if operatorType == .multiple {
+                                        }else if operatorType == .multiple {
                                             totalNumber = String((Int(totalNumber) ?? 0) * tempNumber)
-                                        }
-                                        else if operatorType == .minus {
+                                        }else if operatorType == .minus {
                                             totalNumber = String(tempNumber - (Int(totalNumber) ?? 0))
+                                        }else if operatorType == .devide {
+                                            totalNumber = String(tempNumber / (Int(totalNumber) ?? 0))
                                         }
-                                        
-                                        
                                     }
                                     else {
                                         totalNumber += item.ButtonDisplayName
